@@ -6,21 +6,11 @@ and insert those data into desired databse
 """
 
 import os
-import logging
 import datetime
 import json
-from google.protobuf.json_format import MessageToDict
-from ReadCourseData import from_raw_to_list
-from configparser import ConfigParser
 from pymongo import MongoClient
 from pymongo import errors as mongoerrors
 from pathlib import Path
-
-logging.basicConfig(filename = '../log/' + 
-                str(datetime.datetime.now()).replace(' ', '_').replace(':', '')[:17] + '.log', 
-                level=logging.INFO, 
-                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 def get_db():
     """Get MongoDB username and password from config file and returns desired databse.
@@ -31,8 +21,8 @@ def get_db():
         The database object
 
     """
-    username, password = "dev2020"
-    db_name = mongo_config['Mongo_DBName']
+    username, password = "dev2020", "dev2020"
+    db_name = "Dev2020"
     client = MongoClient('mongodb+srv://' + username + ':' + password
                          + "@dev2020-k3zss.mongodb.net/test?retryWrites=true&w=majority")
     return client.get_database(db_name)
@@ -79,11 +69,6 @@ def main():
     With help of other functions, this main function could read the data from
     json files and put them into desired databses.
     """
-    logger.info('Excecution Started.')
-
-    #TODO
-        logger.error(str(e))
-    logger.info('Excecution Finished.')
 
 if __name__ == "__main__":
     main()
