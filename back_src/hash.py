@@ -12,4 +12,4 @@ def sha256_hash(str):
 		Raises:
 			TypeError
 	"""
-	return s = hashlib.sha256(bytes(str, encoding='utf-8')).hexdigest()
+	return hashlib.sha256(bytes(str, encoding='utf-8')).hexdigest()
