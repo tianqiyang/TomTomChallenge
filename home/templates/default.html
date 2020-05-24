@@ -1,0 +1,196 @@
+<!DOCTYPE html> {% load staticfiles %}
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
+    <title>Tomtom Restaurant</title>
+    <style>
+        body {
+            font-family: Arial;
+            color: white;
+        }
+        
+        .split {
+            height: 100%;
+            width: 10%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            overflow-x: hidden;
+            padding-top: 20px;
+            background-color: #f1f1f1;
+        }
+        
+        .left {
+            left: 0;
+            background-color: inherit;
+        }
+        
+        .right {
+            right: 0;
+            background-color: inherit;
+        }
+        
+        .tab {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .tab .leftBtn {
+            display: block;
+            background-color: inherit;
+            padding: 5px 20px 10px;
+            width: 100%;
+            outline: none;
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 10%;
+        }
+        
+        .tab .rightBtn {
+            display: block;
+            background-color: inherit;
+            padding: 5px 20px 10px;
+            width: 100%;
+            outline: none;
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 10%;
+        }
+        
+        .tab .leftBtn.active {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        .tab .rightBtn.active {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        .tab .leftBtn:hover {
+            background-color: rgb(219, 244, 94);
+        }
+        
+        .tab .rightBtn:hover {
+            background-color: rgb(219, 244, 94);
+        }
+        
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            padding: 20px 0px 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="split left">
+        <div class="tab">
+            <button class="leftBtn" onclick="selectType1(event, 'cooked')" id="defaultOpen">
+                <img src="{% static 'home/cooked.png' %}">
+                <p>Cooked</p>
+            </button>
+            <button class="leftBtn" onclick="selectType1(event, 'raw')">
+                <img src="{% static 'home/raw.png' %}">
+                <p>Raw Material</p>
+            </button>
+        </div>
+    </div>
+
+    <div id="cooked" class="tabcontent">
+        <div class="split right">
+            <div class="tab">
+                <button class="rightBtn" onclick="selectType2(event, 'asian')" id="defaultOpen">
+                    <img src="{% static 'home/asian.png' %}">
+                    <p>Asian</p>
+                </button>
+                <button class="rightBtn" onclick="selectType2(event, 'fast_food')">
+                    <img src="{% static 'home/fast_food.png' %}">
+                    <p>Fast Food</p>
+                </button>
+                <button class="rightBtn" onclick="selectType2(event, 'mexican')">
+                    <img src="{% static 'home/mexican.png' %}">
+                    <p>Cooked</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="raw" class="tabcontent">
+        <div class="split right">
+            <div class="tab">
+                <button class="rightBtn" onclick="selectType2(event, 'meat')">
+                    <img src="{% static 'home/meat.png' %}">
+                    <p>Meat</p>
+                </button>
+                <button class="rightBtn" onclick="selectType2(event, 'fish')">
+                    <img src="{% static 'home/fish.png' %}">
+                    <p>Fish</p>
+                </button>
+                <button class="rightBtn" onclick="selectType2(event, 'vagetable')">
+                    <img src="{% static 'home/vagetable.png' %}">
+                    <p>Vagetable</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id='map' class="container" style='width: 1400px; height: 900px;'></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWFwbWFwYmIiLCJhIjoiY2thaXdxdmk3MDY0ODJybXFuY2EweDNhOCJ9.MjqnJP-XFdhimqF-OP_kmA';
+
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-122.44, 37.79], // starting position
+            zoom: 12.5 // starting zoom
+        });
+
+        // Add geolocate control to the map.
+        map.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            })
+        );
+
+        function selectType1(event, type) {
+            var i, tabcontent, leftBtn, another;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            leftBtn = document.getElementsByClassName("leftBtn");
+            for (i = 0; i < leftBtn.length; i++) {
+                leftBtn[i].className = leftBtn[i].className.replace(" active", "");
+            }
+            document.getElementById(type).style.display = "block";
+            event.currentTarget.className += " active";
+            another = document.getElementById(type).getElementsByClassName("rightBtn");
+            another[0].className += " active";
+        }
+
+        function selectType2(event, type) {
+            var i, leftBtn;
+            leftBtn = document.getElementsByClassName("rightBtn");
+            for (i = 0; i < leftBtn.length; i++) {
+                leftBtn[i].className = leftBtn[i].className.replace(" active", "");
+            }
+            event.currentTarget.className += " active";
+        }
+
+        document.getElementById("defaultOpen").click();
+    </script>
+
+</body>
+
+</html>
