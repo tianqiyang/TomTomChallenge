@@ -21,7 +21,13 @@ def default_map(request):
         'asian': [
             {
                 "coordinates": [-122.41157518699714, 37.78861143786813],
-                "description": "restaurant 1"
+                "food_name": "Pork Rice",
+                "description": "restaurant 1",
+                "Ingredients": "Fried pork, eggs,tomatoes, onions, brown rice",
+                "address": "865 Market St, San Francisco, CA 94103",
+                "food_image": "img/pork_rice.jpg",
+                "restaurant_logo": "img/Panda_Express_logo.png",
+                "other_logos": ["img/1.png", "img/324.png", "img/323.png", ]
             }, {
                 "coordinates": [-122.43563039769336, 37.79623397692485],
                 "description": "restaurant 2"
