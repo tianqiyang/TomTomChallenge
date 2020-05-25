@@ -18,7 +18,7 @@ def default_map(request):
     #args = getAllData()
     #fake data
     args = {
-        'cook': [
+        'cook': {
             'asian': [
             {
                 "coordinates": [-122.41157518699714, 37.78861143786813],
@@ -46,10 +46,10 @@ def default_map(request):
                 "other_logos": ["img/1.png", "img/324.png", "img/323.png", ]
             }],
         'fast_food': []
-        ],
-        'raw' :[
+        },
+        'raw' :{
             'fish': [],
             'meat': []
-        ]
+        }
     }
     return HttpResponse(template.render(args, request))
