@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
-    <title>Tomtom Restaurant</title>
+    <title>Tomtom Foods</title>
     <style>
         body {
             font-family: Arial;
@@ -95,12 +95,6 @@
             height: 50px;
             cursor: pointer;
         }
-        
-        .mapboxgl-popup {
-            max-width: 400px;
-            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-            color: black;
-        }
     </style>
 </head>
 
@@ -168,57 +162,19 @@
             zoom: 12.5 // starting zoom
         });
 
-        const bounds = new mapboxgl.LngLatBounds();
-
-        const geojson = {
-            "type": "FeatureCollection",
-            "features": [{
-                "geometry": {
-                    "coordinates": [-122.41157518699714,
-                        37.78861143786813
-                    ],
-                    "type": "Point"
-                },
-                "type": "Feature",
-                "properties": {
-                    "description": "restaurant 1"
-                }
-            }, {
-                "geometry": {
-                    "coordinates": [-122.43563039769336,
-                        37.79623397692485
-                    ],
-                    "type": "Point"
-                },
-                "type": "Feature",
-                "properties": {
-                    "description": "restaurant 2"
-                }
-            }, {
-                "geometry": {
-                    "coordinates": [-122.45373134831641,
-                        37.780423390391235
-                    ],
-                    "type": "Point"
-                },
-                "type": "Feature",
-                "properties": {
-                    "description": "restaurant 3"
-                }
-            }]
-        }
-
+        //one pin
         var monument = [-122.45373134831641,
             37.780423390391235
         ];
-        var popup = new mapboxgl.Popup({
-            offset: 25
-        }).setText(
-            'somthing'
-        );
+
         var el = document.createElement('div');
         el.id = 'marker';
-        new mapboxgl.Marker(el).setLngLat(monument).setPopup(popup).addTo(map);
+
+        new mapboxgl.Marker(el).setLngLat(monument).addTo(map);
+        el.addEventListener('click', () => {
+            //display slides of foods
+        });
+
         map.addControl(
             new mapboxgl.GeolocateControl({
                 positionOptions: {
@@ -251,6 +207,7 @@
                 leftBtn[i].className = leftBtn[i].className.replace(" active", "");
             }
             event.currentTarget.className += " active";
+            //set list of resturants in the map
         }
 
         document.getElementById("defaultOpen").click();
