@@ -199,11 +199,9 @@
         Array.from(modals).forEach(function(modal) {
             let food_name = modal.dataset.id;
             var btn = document.getElementById(food_name);
-
             btn.onclick = function() {
                 modal.style.display = "block";
             }
-
         });
 
         window.onclick = function(event) {
@@ -211,13 +209,14 @@
                 event.target.style.display = "none";
             }
         }
+
         var foods = document.getElementsByClassName('food');
         Array.from(foods).forEach(function(e) {
             e.id = "marker";
             let coordinates = [e.dataset.x, e.dataset.y];
             new mapboxgl.Marker(e).setLngLat(coordinates).addTo(map);
-
         });
+
         // set control
         map.addControl(
             new mapboxgl.GeolocateControl({
