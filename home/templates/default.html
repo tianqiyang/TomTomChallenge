@@ -174,13 +174,13 @@
     </div>
 
     {% for i in food %}
-    <div class="modal" data-id={{ i.food_name }}>
+    <div class="modal" id={{ i.food_name }}>
         <div class="modal-content">
             {{ i.descirption }}
         </div>
     </div>
 
-    <div class="food" id={{ i.food_name }} data-x={{i.x}} data-y={{i.y}} data-cook_type={{ i.cook_type }} data-food_type={{ i.food_type }}></div>
+    <div class="food" id={{ i.food_name }} data-x={{i.x}} data-y={{i.y}} data-cook_type={{ i.cook_type }} data-food_type={{ i.food_type }} data-food_name={{ i.food_name }}></div>
     {% endfor %}
 
     <div id='map' style='width: 1650px; height: 900px;'></div>
@@ -189,10 +189,10 @@
         mapboxgl.accessToken = 'pk.eyJ1IjoibWFwbWFwYmIiLCJhIjoiY2thaXdxdmk3MDY0ODJybXFuY2EweDNhOCJ9.MjqnJP-XFdhimqF-OP_kmA';
 
         var map = new mapboxgl.Map({
-            container: 'map', // container id
+            container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [-122.44, 37.79], // starting position
-            zoom: 12.5 // starting zoom
+            center: [-122.44, 37.79],
+            zoom: 12.5
         });
 
         const orig = {
@@ -200,28 +200,35 @@
             'geometry': {
                 'type': 'Point',
                 'coordinates': []
+            },
+            'properties': {
+                'food_name': "name",
+                'description': 'description'
             }
         };
 
-        function addOtherAttributes(corr) {
+        function addOtherAttributes(corr, name) {
             var point = JSON.parse(JSON.stringify(orig));
             point.geometry.coordinates = corr;
+            point.properties.food_name = name;
             return point;
         };
 
         var dict = {};
         var layers = [];
+        var foods = document.getElementsByClassName('food');
+        var modals = document.getElementsByClassName("modal");
         map.on('load', function() {
-            var foods = document.getElementsByClassName('food');
             Array.from(foods).forEach(function(e) {
                 e.id = "marker";
                 let coordinates = [parseFloat(e.dataset.x), parseFloat(e.dataset.y)];
+                let name = e.dataset.food_name;
                 let map_layer = e.dataset.food_type;
                 if (layers.includes(map_layer)) {
-                    dict[map_layer].push(addOtherAttributes(coordinates));
+                    dict[map_layer].push(addOtherAttributes(coordinates, name));
                 } else {
                     layers.push(map_layer);
-                    dict[map_layer] = [addOtherAttributes(coordinates)];
+                    dict[map_layer] = [addOtherAttributes(coordinates, name)];
                 }
             });
 
@@ -250,13 +257,33 @@
                     });
 
                 map.on('click', layer, function(e) {
-                    console.log(layer);
-                    console.log();
-                    console.log(e);
+                    var coordinates = e.features[0].geometry.coordinates.slice();
+                    var food_name = e.features[0].properties.food_name;
+
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+
+                    var btn = document.getElementById(food_name);
+                    let k;
+                    for (k = 0; k < modals.length; k++) {
+                        if (modals[k].id == food_name) {
+                            break;
+                        }
+                    }
+                    modals[k].style.display = "block";
+                });
+
+                map.on('mouseenter', layer, function() {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                // Change it back to a pointer when it leaves.
+                map.on('mouseleave', layer, function() {
+                    map.getCanvas().style.cursor = '';
                 });
 
                 var btn = document.getElementById(layer);
-
                 btn.onclick = function(event) {
                     var i, j, rightBtn;
                     rightBtn = document.getElementsByClassName("rightBtn");
@@ -270,18 +297,8 @@
                         map.setLayoutProperty(layers[j], 'visibility', 'none');
                     }
                     map.setLayoutProperty(layer, 'visibility', 'visible');
-                }
+                };
             });
-        });
-
-        //modal
-        var modals = document.getElementsByClassName("modal");
-        Array.from(modals).forEach(function(modal) {
-            let food_name = modal.dataset.id;
-            var btn = document.getElementById(food_name);
-            btn.onclick = function() {
-                modal.style.display = "block";
-            }
         });
 
         // set control
