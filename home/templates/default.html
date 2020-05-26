@@ -148,7 +148,7 @@
                 </button>
                 <button class="rightBtn" id='mexican'>
                     <img src="{% static 'home/mexican.png' %}">
-                    <p>Cooked</p>
+                    <p>Mexican</p>
                 </button>
             </div>
         </div>
@@ -247,7 +247,6 @@
                                 'features': dict[layer]
                             }
                         });
-
                         map.addLayer({
                             'id': layer,
                             'type': 'symbol',
@@ -256,14 +255,16 @@
                                 'icon-image': 'pin',
                                 'visibility': 'visible',
                                 'icon-size': .1
-                            },
+                            }
                         });
                     });
 
                 map.on('click', layer, function(e) {
                     console.log(e);
                 });
+
                 var btn = document.getElementById(layer);
+
                 btn.onclick = function(event) {
                     var i, j, rightBtn;
                     rightBtn = document.getElementsByClassName("rightBtn");
@@ -311,10 +312,14 @@
             event.currentTarget.className += " active";
             another = document.getElementById(type).getElementsByClassName("rightBtn");
             another[0].className += " active";
+            if (type == "cooked") {
+                document.getElementById("asian").click();
+            } else {
+                document.getElementById("meat").click();
+            }
         }
 
         document.getElementById("defaultOpen").click();
-        document.getElementById("asian").click();
     </script>
 </body>
 
