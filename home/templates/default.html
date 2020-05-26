@@ -195,16 +195,6 @@
             zoom: 12.5 // starting zoom
         });
 
-        //modal
-        var modals = document.getElementsByClassName("modal");
-        Array.from(modals).forEach(function(modal) {
-            let food_name = modal.dataset.id;
-            var btn = document.getElementById(food_name);
-            btn.onclick = function() {
-                modal.style.display = "block";
-            }
-        });
-
         const orig = {
             'type': 'Feature',
             'geometry': {
@@ -260,6 +250,8 @@
                     });
 
                 map.on('click', layer, function(e) {
+                    console.log(layer);
+                    console.log();
                     console.log(e);
                 });
 
@@ -280,6 +272,16 @@
                     map.setLayoutProperty(layer, 'visibility', 'visible');
                 }
             });
+        });
+
+        //modal
+        var modals = document.getElementsByClassName("modal");
+        Array.from(modals).forEach(function(modal) {
+            let food_name = modal.dataset.id;
+            var btn = document.getElementById(food_name);
+            btn.onclick = function() {
+                modal.style.display = "block";
+            }
         });
 
         // set control
