@@ -118,6 +118,11 @@
             width: 80%;
             color: black;
         }
+        
+        #map {
+            width: 2090px;
+            height: 1150px;
+        }
     </style>
 </head>
 
@@ -183,7 +188,7 @@
     <div class="food" id={{ i.food_name }} data-x={{i.x}} data-y={{i.y}} data-cook_type={{ i.cook_type }} data-food_type={{ i.food_type }} data-food_name={{ i.food_name }}></div>
     {% endfor %}
 
-    <div id='map' style='width: 1650px; height: 900px;'></div>
+    <div id='map'></div>
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoibWFwbWFwYmIiLCJhIjoiY2thaXdxdmk3MDY0ODJybXFuY2EweDNhOCJ9.MjqnJP-XFdhimqF-OP_kmA';
