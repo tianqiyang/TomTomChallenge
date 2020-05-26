@@ -28,7 +28,7 @@ def default_map(request):
                 "food_name": "Dragon Liver Noodle",
                 "Ingredients": "Pig liver, noodle",
                 "address": "832 Market St, San Francisco, CA 94103",
-                "food_image": "img/pork_rice.jpg",
+                "food_image": "img/noodle.jpg",
                 "restaurant_logo": "img/Panda_Express_logo.png",
                 "other_logos": ["img/1.png", "img/324.png", "img/323.png"],
                 "descirption": "dragon Liver Noodle"

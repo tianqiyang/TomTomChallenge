@@ -179,7 +179,8 @@
             {{ i.descirption }}
         </div>
     </div>
-    <div class="food" id={{ i.food_name }} data-x={{i.x}} data-y={{i.y}}></div>
+
+    <div class="food" id={{ i.food_name }} data-x={{i.x}} data-y={{i.y}} data-cook_type={{ i.cook_type }} data-food_type={{ i.food_type }}></div>
     {% endfor %}
 
     <div id='map' style='width: 1650px; height: 900px;'></div>
@@ -210,11 +211,29 @@
             }
         }
 
-        var foods = document.getElementsByClassName('food');
-        Array.from(foods).forEach(function(e) {
-            e.id = "marker";
-            let coordinates = [e.dataset.x, e.dataset.y];
-            new mapboxgl.Marker(e).setLngLat(coordinates).addTo(map);
+        var layers = [];
+        map.on('load', function() {
+            var foods = document.getElementsByClassName('food');
+            Array.from(foods).forEach(function(e) {
+                e.id = "marker";
+                let coordinates = [e.dataset.x, e.dataset.y];
+                let map_layer = e.dataset.cook_type + "_" + e.dataset.food_type;
+                let mapLayer = map.getLayerByName(map_layer);
+                if (typeof mapLayer !== 'undefined') {
+                    map.addLayer({
+                        'id': map_layer,
+                        'type': 'point',
+                        'layout': {
+                            'visibility': 'visible'
+                        }
+                    });
+                    layers.push(map_layer);
+
+                } else {
+
+                }
+                new mapboxgl.Marker(e).setLngLat(coordinates).addTo(map);
+            });
         });
 
         // set control
