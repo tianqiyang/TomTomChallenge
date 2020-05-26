@@ -11,18 +11,20 @@ def default_map(request):
             [{
                 "x": -122.41157518699714,
                 "y": 37.78861143786813,
-                "isCook": "cook",
-                "type": "asian",
+                "cook_type": "cook",
+                "food_type": "asian",
                 "food_name": "Pork Rice",
                 "Ingredients": "Fried pork, eggs,tomatoes, onions, brown rice",
                 "address": "865 Market St, San Francisco, CA 94103",
                 "food_image": "img/pork_rice.jpg",
                 "restaurant_logo": "img/Panda_Express_logo.png",
                 "other_logos": ["img/1.png", "img/324.png", "img/323.png"],
-                "descirption": "<img src=\" static 'img/pork_rice.jpg' %}\""
+                "descirption": ""
             }, {
                 "x": -122.43563039769336,
                 "y": 37.79623397692485,
+                "cook_type": "cook",
+                "food_type": "asian",
                 "food_name": "Dragon Liver Noodle",
                 "Ingredients": "Pig liver, noodle",
                 "address": "832 Market St, San Francisco, CA 94103",
@@ -33,8 +35,8 @@ def default_map(request):
             }, {
                 "x": -122.45373134831641, 
                 "y": 37.780423390391235,
-                "isCook": "cook",
-                "type": "fast_food",
+                "cook_type": "cook",
+                "food_type": "fast_food",
                 "food_name": "Burritos",
                 "Ingredients": "bread, meat, cheese",
                 "address": "901 Market St, San Francisco, CA 94103",
