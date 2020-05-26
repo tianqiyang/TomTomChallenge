@@ -88,7 +88,7 @@
             padding: 20px 0px 0px;
         }
         
-        #marker {
+        .marker {
             background-image: url("{% static 'img/pin-2.png' %}");
             background-size: cover;
             width: 50px;
@@ -138,15 +138,15 @@
     <div id="cooked" class="tabcontent">
         <div class="split right">
             <div class="tab">
-                <button class="rightBtn" onclick="selectType2(event, 'asian')" id="defaultOpen">
+                <button class="rightBtn" id='asian'>
                     <img src="{% static 'home/asian.png' %}">
                     <p>Asian</p>
                 </button>
-                <button class="rightBtn" onclick="selectType2(event, 'fast_food')">
+                <button class="rightBtn" id='fast_food'>
                     <img src="{% static 'home/fast_food.png' %}">
                     <p>Fast Food</p>
                 </button>
-                <button class="rightBtn" onclick="selectType2(event, 'mexican')">
+                <button class="rightBtn" id='mexican'>
                     <img src="{% static 'home/mexican.png' %}">
                     <p>Cooked</p>
                 </button>
@@ -157,15 +157,15 @@
     <div id="raw" class="tabcontent">
         <div class="split right">
             <div class="tab">
-                <button class="rightBtn" onclick="selectType2(event, 'meat')">
+                <button class="rightBtn" id='meat'>
                     <img src="{% static 'home/meat.png' %}">
                     <p>Meat</p>
                 </button>
-                <button class="rightBtn" onclick="selectType2(event, 'fish')">
+                <button class="rightBtn" id='fish'>
                     <img src="{% static 'home/fish.png' %}">
                     <p>Fish</p>
                 </button>
-                <button class="rightBtn" onclick="selectType2(event, 'vagetable')">
+                <button class="rightBtn" id='vagetable'>
                     <img src="{% static 'home/vagetable.png' %}">
                     <p>Vagetable</p>
                 </button>
@@ -205,34 +205,79 @@
             }
         });
 
-        window.onclick = function(event) {
-            if (event.target.className == "modal") {
-                event.target.style.display = "none";
+        const orig = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': []
             }
-        }
+        };
 
+        function addOtherAttributes(corr) {
+            var point = JSON.parse(JSON.stringify(orig));
+            point.geometry.coordinates = corr;
+            return point;
+        };
+
+        var dict = {};
         var layers = [];
         map.on('load', function() {
             var foods = document.getElementsByClassName('food');
             Array.from(foods).forEach(function(e) {
                 e.id = "marker";
-                let coordinates = [e.dataset.x, e.dataset.y];
-                let map_layer = e.dataset.cook_type + "_" + e.dataset.food_type;
-                let mapLayer = map.getLayerByName(map_layer);
-                if (typeof mapLayer !== 'undefined') {
-                    map.addLayer({
-                        'id': map_layer,
-                        'type': 'point',
-                        'layout': {
-                            'visibility': 'visible'
-                        }
-                    });
-                    layers.push(map_layer);
-
+                let coordinates = [parseFloat(e.dataset.x), parseFloat(e.dataset.y)];
+                let map_layer = e.dataset.food_type;
+                if (layers.includes(map_layer)) {
+                    dict[map_layer].push(addOtherAttributes(coordinates));
                 } else {
-
+                    layers.push(map_layer);
+                    dict[map_layer] = [addOtherAttributes(coordinates)];
                 }
-                new mapboxgl.Marker(e).setLngLat(coordinates).addTo(map);
+            });
+
+            Array.from(layers).forEach(function(layer) {
+                map.loadImage('../../static/img/pin-2.png',
+                    function(error, image) {
+                        if (error) throw error;
+                        if (!map.hasImage('pin')) map.addImage('pin', image);
+                        map.addSource(layer, {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'FeatureCollection',
+                                'features': dict[layer]
+                            }
+                        });
+
+                        map.addLayer({
+                            'id': layer,
+                            'type': 'symbol',
+                            'source': layer,
+                            'layout': {
+                                'icon-image': 'pin',
+                                'visibility': 'visible',
+                                'icon-size': .1
+                            },
+                        });
+                    });
+
+                map.on('click', layer, function(e) {
+                    console.log(e);
+                });
+                var btn = document.getElementById(layer);
+                btn.onclick = function(event) {
+                    var i, j, rightBtn;
+                    rightBtn = document.getElementsByClassName("rightBtn");
+                    for (i = 0; i < rightBtn.length; i++) {
+                        rightBtn[i].className = rightBtn[i].className.replace(" active", "");
+                    }
+                    event.currentTarget.className += " active";
+                    event.preventDefault();
+                    event.stopPropagation();
+                    for (j = 0; j < layers.length; j++) {
+                        map.setLayoutProperty(layers[j], 'visibility', 'none');
+                    }
+                    map.setLayoutProperty(layer, 'visibility', 'visible');
+                }
             });
         });
 
@@ -245,6 +290,12 @@
                 trackUserLocation: true
             })
         );
+
+        window.onclick = function(event) {
+            if (event.target.className == "modal") {
+                event.target.style.display = "none";
+            }
+        }
 
         function selectType1(event, type) {
             var i, tabcontent, leftBtn, another;
@@ -262,17 +313,8 @@
             another[0].className += " active";
         }
 
-        function selectType2(event, type) {
-            var i, leftBtn;
-            leftBtn = document.getElementsByClassName("rightBtn");
-            for (i = 0; i < leftBtn.length; i++) {
-                leftBtn[i].className = leftBtn[i].className.replace(" active", "");
-            }
-            event.currentTarget.className += " active";
-            //set list of resturants in the map
-        }
-
         document.getElementById("defaultOpen").click();
+        document.getElementById("asian").click();
     </script>
 </body>
 
